@@ -6,7 +6,10 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'CMS Dashboard',
+  title: {
+    default: 'CMS Dashboard',
+    template: '%s | CMS Dashboard',
+  },
   description: 'Content Management System Dashboard',
 };
 

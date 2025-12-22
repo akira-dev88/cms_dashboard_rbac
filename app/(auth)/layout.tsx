@@ -1,8 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import Link from 'next/link';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'CMS Dashboard - Authentication',
@@ -15,7 +12,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={`min-h-screen ${inter.className}`}>
+    <div className="min-h-screen">
       <div className="container relative grid min-h-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
         {/* Left side - Form */}
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px] lg:p-8">
