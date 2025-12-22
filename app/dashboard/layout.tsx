@@ -1,12 +1,6 @@
-import type { Metadata } from 'next';
 import { ProtectedRoute } from '@/components/ui/protected-route';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
-
-export const metadata: Metadata = {
-  title: 'Dashboard - CMS',
-  description: 'CMS Dashboard overview',
-};
 
 export default function DashboardLayout({
   children,

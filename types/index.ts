@@ -2,6 +2,7 @@ export interface User {
   id: number;
   email: string;
   username: string;
+  roles: string[]; // Make sure this exists
   created_at: string;
 }
 

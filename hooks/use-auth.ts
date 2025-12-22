@@ -7,6 +7,7 @@ import { api } from '@/lib/api';
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   const login = useCallback(async (data: LoginData) => {
@@ -17,6 +18,11 @@ export const useAuth = () => {
       const { access_token } = response.data;
       
       localStorage.setItem('access_token', access_token);
+      
+      // Fetch user data after login
+      const userData = await getCurrentUser();
+      setUser(userData);
+      
       router.push('/dashboard');
       return response.data;
     } catch (err: any) {
@@ -39,6 +45,8 @@ export const useAuth = () => {
       });
       
       toast.success('Account created successfully!');
+      
+      // Auto-login after registration
       await login({ email: data.email, password: data.password });
       return response.data;
     } catch (err: any) {
@@ -53,6 +61,7 @@ export const useAuth = () => {
 
   const logout = useCallback(() => {
     localStorage.removeItem('access_token');
+    setUser(null);
     toast.info('You have been logged out');
     router.push('/login');
   }, [router]);
@@ -60,19 +69,34 @@ export const useAuth = () => {
   const getCurrentUser = useCallback(async (): Promise<User | null> => {
     try {
       const response = await api.post('/auth/me');
-      return response.data;
+      const userData = response.data;
+      setUser(userData);
+      return userData;
     } catch {
+      setUser(null);
       return null;
     }
   }, []);
 
+  // Function to update user state
+  const updateUser = useCallback((userData: User | null) => {
+    setUser(userData);
+  }, []);
+
   return {
+    // State
+    user,
+    loading,
+    error,
+    
+    // Actions
     login,
     register,
     logout,
     getCurrentUser,
-    loading,
-    error,
+    updateUser,
+    
+    // Utility
     clearError: () => setError(null),
   };
 };
