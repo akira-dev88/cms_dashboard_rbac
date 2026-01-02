@@ -1,7 +1,8 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
   Users,
@@ -13,8 +14,9 @@ import {
   Shield,
   Key,
   UserPlus,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+  ChevronDown,
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 const navItems = [
   {
@@ -63,79 +65,107 @@ const navItems = [
     href: '/dashboard/settings',
     icon: Settings,
   },
-];
+]
 
 export function Sidebar() {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
-  const isActive = (href: string) => pathname === href;
-  const isParentActive = (children: any[]) => 
-    children.some(child => isActive(child.href));
+  const isActive = (href: string) => pathname === href
+  const isParentActive = (children: any[]) =>
+    children.some((child) => pathname.startsWith(child.href))
+
+  const [rbacOpen, setRbacOpen] = useState(
+    isParentActive(navItems.find((i) => i.title === 'RBAC')!.children!)
+  )
 
   return (
     <div className="hidden border-r bg-gray-50 md:block md:w-64">
       <div className="flex h-full flex-col">
         <div className="flex h-14 items-center border-b px-4">
-          <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 font-semibold"
+          >
             <div className="h-6 w-6 rounded-lg bg-blue-600" />
-            <span>CMS Dashboard</span>
+            <span>Admin</span>
           </Link>
         </div>
+
         <div className="flex-1 overflow-auto py-2">
           <nav className="grid items-start px-2 text-sm font-medium">
             {navItems.map((item) => {
-              const Icon = item.icon;
-              
+              const Icon = item.icon
+
+              /* ---------- RBAC Accordion ---------- */
               if (item.children) {
-                const parentActive = isParentActive(item.children);
-                
+                const parentActive = isParentActive(item.children)
+
                 return (
                   <div key={item.title} className="space-y-1">
-                    <div className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500",
-                      parentActive && "text-blue-600"
-                    )}>
+                    <button
+                      type="button"
+                      onClick={() => setRbacOpen((prev) => !prev)}
+                      className={cn(
+                        'flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-left text-gray-500 transition-colors hover:text-gray-900',
+                        parentActive && 'text-blue-600'
+                      )}
+
+                    >
                       <Icon className="h-4 w-4" />
-                      {item.title}
-                    </div>
-                    <div className="ml-4 space-y-1">
-                      {item.children.map((child) => {
-                        const ChildIcon = child.icon;
-                        return (
-                          <Link
-                            key={child.href}
-                            href={child.href}
-                            className={cn(
-                              "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900",
-                              isActive(child.href) && "bg-blue-50 text-blue-600 hover:text-blue-600"
-                            )}
-                          >
-                            <ChildIcon className="h-4 w-4" />
-                            {child.title}
-                          </Link>
-                        );
-                      })}
-                    </div>
+                      <span className="flex-1">{item.title}</span>
+                      <ChevronDown
+                        className={cn(
+                          'h-4 w-4 transition-transform',
+                          rbacOpen && 'rotate-180'
+                        )}
+                      />
+                    </button>
+
+                    {rbacOpen && (
+                      <div className="ml-6 space-y-1">
+                        {item.children.map((child) => {
+                          const ChildIcon = child.icon
+
+                          return (
+                            <Link
+                              key={child.href}
+                              href={child.href}
+                              className={cn(
+                                'flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900',
+                                isActive(child.href) &&
+                                'bg-blue-50 text-blue-600 hover:text-blue-600'
+                              )}
+                            >
+                              <ChildIcon className="h-4 w-4" />
+                              {child.title}
+                            </Link>
+                          )
+                        })}
+                      </div>
+                    )}
                   </div>
-                );
+                )
               }
-              
+
+              /* ---------- Normal Links ---------- */
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900",
-                    isActive(item.href) && "bg-blue-50 text-blue-600 hover:text-blue-600"
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900',
+                    isActive(item.href) &&
+                    'bg-blue-50 text-blue-600 hover:text-blue-600'
                   )}
                 >
                   <Icon className="h-4 w-4" />
                   {item.title}
                 </Link>
-              );
+              )
             })}
           </nav>
         </div>
+
         <div className="mt-auto border-t p-4">
           <div className="space-y-2">
             <Link
@@ -156,5 +186,5 @@ export function Sidebar() {
         </div>
       </div>
     </div>
-  );
+  )
 }
