@@ -1,13 +1,15 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { toast } from 'sonner'
+import { Eye, EyeOff } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -15,21 +17,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useAuth } from '@/hooks/use-auth';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { useAuth } from '@/hooks/use-auth'
 
 const formSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-});
+})
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<typeof formSchema>
 
 export function LoginForm() {
-  const router = useRouter();
-  const { login, loading } = useAuth();
-  const [serverError, setServerError] = useState<string | null>(null);
+  const router = useRouter()
+  const { login, loading } = useAuth()
+  const [serverError, setServerError] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -37,19 +40,19 @@ export function LoginForm() {
       email: '',
       password: '',
     },
-  });
+  })
 
   const onSubmit = async (data: FormData) => {
     try {
-      setServerError(null);
-      await login(data);
-      toast.success('You have been logged in successfully.');
+      setServerError(null)
+      await login(data)
+      toast.success('You have been logged in successfully.')
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Login failed';
-      setServerError(errorMessage);
-      toast.error(errorMessage);
+      const errorMessage = error.response?.data?.message || 'Login failed'
+      setServerError(errorMessage)
+      toast.error(errorMessage)
     }
-  };
+  }
 
   return (
     <div className="grid gap-6">
@@ -60,7 +63,7 @@ export function LoginForm() {
               {serverError}
             </div>
           )}
-          
+
           <FormField
             control={form.control}
             name="email"
@@ -87,12 +90,29 @@ export function LoginForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="••••••••"
-                    type="password"
-                    autoComplete="current-password"
-                    {...field}
-                  />
+                  <div className="relative">
+                    <Input
+                      placeholder="••••••••"
+                      type={showPassword ? 'text' : 'password'}
+                      autoComplete="current-password"
+                      className="pr-10"
+                      {...field}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      aria-label={
+                        showPassword ? 'Hide password' : 'Show password'
+                      }
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -135,5 +155,5 @@ export function LoginForm() {
         </Link>
       </div>
     </div>
-  );
+  )
 }

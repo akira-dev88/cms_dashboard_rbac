@@ -1,11 +1,6 @@
 import { Metadata } from 'next';
 import { RegisterForm } from '@/components/auth/register-form';
 
-export const metadata: Metadata = {
-  title: 'Register - CMS Dashboard',
-  description: 'Create a new CMS Dashboard account',
-};
-
 export default function RegisterPage() {
   return (
     <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-87.5">

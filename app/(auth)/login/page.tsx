@@ -1,11 +1,6 @@
 import { Metadata } from 'next';
 import { LoginForm } from '@/components/auth/login-form';
 
-export const metadata: Metadata = {
-  title: 'Login - CMS Dashboard',
-  description: 'Login to your CMS Dashboard account',
-};
-
 export default function LoginPage() {
   return (
     <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-87.5">
