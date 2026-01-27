@@ -44,13 +44,13 @@ export function LoginForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      setServerError(null)
-      await login(data)
-      toast.success('You have been logged in successfully.')
+      setServerError(null);
+      await login(data);
+      // toast is already shown in useAuth hook
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Login failed'
-      setServerError(errorMessage)
-      toast.error(errorMessage)
+      const errorMessage = error.message || 'Login failed';
+      setServerError(errorMessage);
+      // Don't show toast here since useAuth already shows it
     }
   }
 

@@ -19,6 +19,7 @@ export interface RegisterData {
 
 export interface AuthResponse {
   access_token: string;
+  user: User;
 }
 
 export interface ApiError {

@@ -55,18 +55,17 @@ export function RegisterForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      setServerError(null)
+      setServerError(null);
       await registerUser({
         username: data.username,
         email: data.email,
         password: data.password,
-      })
-      toast.success('Account created successfully.')
+      });
+      // toast is already shown in useAuth hook
     } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message || 'Registration failed'
-      setServerError(errorMessage)
-      toast.error(errorMessage)
+      const errorMessage = error.message || 'Registration failed';
+      setServerError(errorMessage);
+      // Don't show toast here since useAuth already shows it
     }
   }
 

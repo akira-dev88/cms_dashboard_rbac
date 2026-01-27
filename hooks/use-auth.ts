@@ -15,18 +15,16 @@ export const useAuth = () => {
     setError(null);
     try {
       const response = await api.post<AuthResponse>('/auth/login', data);
-      const { access_token } = response.data;
+      const { access_token, user: userData } = response.data; // Updated to match backend response
       
       localStorage.setItem('access_token', access_token);
-      
-      // Fetch user data after login
-      const userData = await getCurrentUser();
-      setUser(userData);
+      setUser(userData); // Set user from login response
       
       router.push('/dashboard');
+      toast.success('Logged in successfully!');
       return response.data;
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Login failed';
+      const errorMessage = err.response?.data?.message || err.message || 'Login failed';
       setError(errorMessage);
       toast.error(errorMessage);
       throw err;
@@ -39,9 +37,11 @@ export const useAuth = () => {
     setLoading(true);
     setError(null);
     try {
+      // Send password, not password_hash - backend will hash it
       const response = await api.post('/auth/register', {
-        ...data,
-        password_hash: data.password,
+        email: data.email,
+        username: data.username,
+        password: data.password, // Changed from password_hash
       });
       
       toast.success('Account created successfully!');
@@ -50,7 +50,7 @@ export const useAuth = () => {
       await login({ email: data.email, password: data.password });
       return response.data;
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Registration failed';
+      const errorMessage = err.response?.data?.message || err.message || 'Registration failed';
       setError(errorMessage);
       toast.error(errorMessage);
       throw err;
@@ -68,11 +68,12 @@ export const useAuth = () => {
 
   const getCurrentUser = useCallback(async (): Promise<User | null> => {
     try {
-      const response = await api.post('/auth/me');
+      const response = await api.get('/auth/me'); // Changed from POST to GET
       const userData = response.data;
       setUser(userData);
       return userData;
-    } catch {
+    } catch (err: any) {
+      console.error('Failed to get user:', err);
       setUser(null);
       return null;
     }
