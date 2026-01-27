@@ -60,11 +60,6 @@ const navItems = [
     href: '/dashboard/analytics',
     icon: BarChart,
   },
-  {
-    title: 'Settings',
-    href: '/dashboard/settings',
-    icon: Settings,
-  },
 ]
 
 export function Sidebar() {

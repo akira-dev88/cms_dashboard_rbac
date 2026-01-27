@@ -16,10 +16,10 @@ export const useAuth = () => {
     try {
       const response = await api.post<AuthResponse>('/auth/login', data);
       const { access_token, user: userData } = response.data; // Updated to match backend response
-      
+
       localStorage.setItem('access_token', access_token);
       setUser(userData); // Set user from login response
-      
+
       router.push('/dashboard');
       toast.success('Logged in successfully!');
       return response.data;
@@ -43,9 +43,9 @@ export const useAuth = () => {
         username: data.username,
         password: data.password, // Changed from password_hash
       });
-      
+
       toast.success('Account created successfully!');
-      
+
       // Auto-login after registration
       await login({ email: data.email, password: data.password });
       return response.data;
@@ -89,15 +89,23 @@ export const useAuth = () => {
     user,
     loading,
     error,
-    
+
     // Actions
     login,
     register,
     logout,
     getCurrentUser,
     updateUser,
-    
+
     // Utility
     clearError: () => setError(null),
+
+    // Role check helpers - Add these:
+    isAdmin: user?.roles?.includes('admin') || false,
+    isSuperAdmin: user?.roles?.includes('super-admin') || false,
+    isEditor: user?.roles?.includes('editor') || false,
+    canDelete: user?.roles?.some(role =>
+      ['admin', 'super-admin', 'editor'].includes(role)
+    ) || false,
   };
 };
