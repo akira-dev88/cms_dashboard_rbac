@@ -1,11 +1,11 @@
-export interface User {
-  id: number;
-  email: string;
-  username: string;
-  roles: string[]; // Make sure this exists
-  created_at: string;
-}
+// types/index.ts
+export * from './users';
+export * from './rbac';
 
+// Import User type from the exported module
+import { User } from './users';
+
+// Auth types
 export interface LoginData {
   email: string;
   password: string;
@@ -25,4 +25,5 @@ export interface AuthResponse {
 export interface ApiError {
   message: string;
   statusCode: number;
+  error?: string;
 }

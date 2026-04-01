@@ -17,19 +17,17 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { User, UserFormData } from '@/types/users';
 
-// Define schema without optional chaining for required fields
 const formSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters'),
   email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters').optional().or(z.literal('')),
-  first_name: z.string().optional().or(z.literal('')),
-  last_name: z.string().optional().or(z.literal('')),
-  avatar_url: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
-  is_active: z.boolean().default(true),
-  is_verified: z.boolean().default(false),
+  password: z.string().min(6, 'Password must be at least 6 characters').optional(),
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
+  avatar_url: z.string().url('Please enter a valid URL').optional(),
+  is_active: z.boolean(),
+  is_verified: z.boolean(),
 });
 
-// Define the type explicitly
 type FormValues = z.infer<typeof formSchema>;
 
 interface UserFormProps {
@@ -45,19 +43,18 @@ export function UserForm({ user, onSubmit, onCancel, isSubmitting }: UserFormPro
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: user?.username || '',
-      email: user?.email || '',
+      username: user?.username ?? '',
+      email: user?.email ?? '',
       password: '',
-      first_name: user?.first_name || '',
-      last_name: user?.last_name || '',
-      avatar_url: user?.avatar_url || '',
+      first_name: user?.first_name ?? '',
+      last_name: user?.last_name ?? '',
+      avatar_url: user?.avatar_url ?? '',
       is_active: user?.is_active ?? true,
       is_verified: user?.is_verified ?? false,
     },
   });
 
   const handleSubmit = async (data: FormValues) => {
-    // Prepare the data for API
     const formData: UserFormData = {
       username: data.username,
       email: data.email,
@@ -65,19 +62,16 @@ export function UserForm({ user, onSubmit, onCancel, isSubmitting }: UserFormPro
       is_verified: data.is_verified,
     };
 
-    // Add optional fields if they have values
-    if (data.first_name && data.first_name.trim()) {
+    if (data.first_name?.trim()) {
       formData.first_name = data.first_name;
     }
-    if (data.last_name && data.last_name.trim()) {
+    if (data.last_name?.trim()) {
       formData.last_name = data.last_name;
     }
-    if (data.avatar_url && data.avatar_url.trim()) {
+    if (data.avatar_url?.trim()) {
       formData.avatar_url = data.avatar_url;
     }
-    
-    // Add password only if provided and not empty
-    if (data.password && data.password.trim()) {
+    if (data.password?.trim()) {
       formData.password = data.password;
     }
 
@@ -127,7 +121,7 @@ export function UserForm({ user, onSubmit, onCancel, isSubmitting }: UserFormPro
                     type="password"
                     placeholder={isEditMode ? 'Leave blank to keep current' : '••••••••'}
                     {...field}
-                    value={field.value || ''}
+                    value={field.value ?? ''}
                   />
                 </FormControl>
                 {isEditMode && (
@@ -197,7 +191,7 @@ export function UserForm({ user, onSubmit, onCancel, isSubmitting }: UserFormPro
                 </div>
                 <FormControl>
                   <Switch
-                    checked={field.value}
+                    checked={field.value ?? true}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
@@ -218,7 +212,7 @@ export function UserForm({ user, onSubmit, onCancel, isSubmitting }: UserFormPro
                 </div>
                 <FormControl>
                   <Switch
-                    checked={field.value}
+                    checked={field.value ?? false}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>

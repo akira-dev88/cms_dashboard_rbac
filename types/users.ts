@@ -1,5 +1,6 @@
+// types/users.ts
 export interface User {
-  id: string;
+  id: string; // Change this to string only
   username: string;
   email: string;
   first_name?: string;
@@ -7,13 +8,13 @@ export interface User {
   avatar_url?: string;
   is_active: boolean;
   is_verified: boolean;
-  mfa_enabled: boolean;
+  mfa_enabled?: boolean;
   last_login_at?: string;
-  failed_login_attempts: number;
+  failed_login_attempts?: number;
   locked_until?: string;
   roles: string[];
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 }
 
 export interface CreateUserData {

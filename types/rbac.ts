@@ -1,6 +1,6 @@
-import { User } from ".";
+// types/rbac.ts
+import { User } from './users';
 
-// RBAC Types
 export interface Role {
   id: string;
   name: string;
@@ -33,6 +33,7 @@ export interface UserRole {
   assigned_by?: string;
   expires_at?: string;
   role?: Role;
+  user?: User;
 }
 
 export interface RolePermission {
@@ -79,9 +80,4 @@ export interface UpdatePermissionData {
 export interface AssignPermissionData {
   roleId: string;
   permissionId: string;
-}
-
-// User with roles
-export interface UserWithRoles extends User {
-  user_roles?: UserRole[];
 }

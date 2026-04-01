@@ -19,10 +19,12 @@ import { Switch } from '@/components/ui/switch';
 import { Role } from '@/types/rbac';
 
 const formSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters').max(50, 'Name must be at most 50 characters'),
+  name: z.string()
+    .min(2, 'Name must be at least 2 characters')
+    .max(50, 'Name must be at most 50 characters'),
   description: z.string().optional(),
-  is_system_role: z.boolean().default(false),
-  hierarchy_level: z.coerce.number().min(0).default(0),
+  is_system_role: z.boolean(),
+  hierarchy_level: z.number().min(0),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -40,10 +42,10 @@ export function RoleForm({ role, onSubmit, onCancel, isSubmitting }: RoleFormPro
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: role?.name || '',
-      description: role?.description || '',
-      is_system_role: role?.is_system_role || false,
-      hierarchy_level: role?.hierarchy_level || 0,
+      name: role?.name ?? '',
+      description: role?.description ?? '',
+      is_system_role: role?.is_system_role ?? false,
+      hierarchy_level: role?.hierarchy_level ?? 0,
     },
   });
 
@@ -78,7 +80,7 @@ export function RoleForm({ role, onSubmit, onCancel, isSubmitting }: RoleFormPro
                   placeholder="Describe what this role can do..."
                   className="min-h-25"
                   {...field}
-                  value={field.value || ''}
+                  value={field.value ?? ''}
                 />
               </FormControl>
               <FormMessage />
@@ -99,6 +101,7 @@ export function RoleForm({ role, onSubmit, onCancel, isSubmitting }: RoleFormPro
                   placeholder="0"
                   {...field}
                   onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                  value={field.value ?? 0}
                 />
               </FormControl>
               <FormDescription>
@@ -122,7 +125,7 @@ export function RoleForm({ role, onSubmit, onCancel, isSubmitting }: RoleFormPro
               </div>
               <FormControl>
                 <Switch
-                  checked={field.value}
+                  checked={field.value ?? false}
                   onCheckedChange={field.onChange}
                   disabled={isEditMode && role?.is_system_role}
                 />
